@@ -29,7 +29,10 @@
 )
 
 (define (ZipSearchHelper zip lst)
-  (if (= (caar lst) zip)
+  (cond
+    ((null? lst) (displayln "Zipcode not found."))
+
+    ((= (caar lst) zip)
       (let ((ans (car lst)))
         (display "\nZipcode: ")
         (display (car ans))
@@ -43,13 +46,39 @@
         (display (cadddr (cdr ans)))
         (display ", ")
         (display (cadddr (cddr ans)))
-      )
-      (ZipSearchHelper zip (cdr lst))
+      ))
+    
+    (else (ZipSearchHelper zip (cdr lst)))
+  )
+)
+
+(define (PlaceSearchHelper plc lst)
+  (cond
+    ((null? lst) (displayln "Place not found."))
+
+    ((string=? (cadar lst) plc)
+      (let ((ans (car lst)))
+        (display "\nZipcode: ")
+        (display (car ans))
+        (display "\nPlace: ")
+        (display (cadr ans))
+        (display "\nState: ")
+        (display (caddr ans))
+        (display "\nCounty: ")
+        (display (cadddr ans))
+        (display "\nLat and Long: ")
+        (display (cadddr (cdr ans)))
+        (display ", ")
+        (display (cadddr (cddr ans)))
+      ))
+    
+    (else (PlaceSearchHelper plc (cdr lst)))
   )
 )
 
 (define (FindByZipcode)
   (display "Input Zipcode >")
+  (flush-output)
   (let ((zipcode (read)))
     (ZipSearchHelper zipcode zipcodes)
   )
@@ -57,8 +86,16 @@
   (MenuLoop)
 )
 
-;(define (FindByPlace)
-;)
+(define (FindByPlace)
+  (display "Input Place >")
+  (flush-output)
+  (read-line)
+  (let ((place (read-line)))
+    (PlaceSearchHelper place zipcodes)
+  )
+
+  (MenuLoop)
+)
 
 ;(define (StatesWithPlace)
 ;)
@@ -81,11 +118,12 @@ Pick your option\n
 6. Count zip codes for a given state\n
 -----------------------------------------------\n
 # > ")
+  (flush-output)
   (let ((select-val (read)))
   (cond
     ((= select-val 1) (displayln "Show Results") (ShowResults))
     ((= select-val 2) (displayln "Find by Zipcode" (FindByZipcode)))
-    ;((= select-val 3) (displayln "Find by Place") (FindByPlace))
+    ((= select-val 3) (displayln "Find by Place") (FindByPlace))
     ;((= select-val 4) (displayln "Find states that have the given place") (StatesWithPlace))
     ;((= select-val 5) (displayln "Find common places between states") (CommonPlacesBetween))
     ;((= select-val 6) (displayln "Count zip codes for a given state") (CountZipCodesForState))
