@@ -3,8 +3,50 @@
 (require "zipcodes.scm")
 (require "run_funcs.scm")
 
+(define (ShowResults)
+  (display "Select List: '(1 . 2) '(-1 1 2 3 4 -4 5): ")
+  (mydisplay (select '(1 . 2) '(-1 1 2 3 4 -4 5)))
+  (display "Select List: '(-1 . 3) '(-1 1 1 2 3 4 -4 5)): ")
+  (mydisplay (select '(-1 . 3) '(-1 1 1 2 3 4 -4 5)))
+  (display "Select List: '(8 . 9) '(-1 1 1 2 3 4 -4 5): ")
+  (mydisplay (select '(8 . 9) '(-1 1 1 2 3 4 -4 5)))
+  (display "Select List: '(3 . 1) '(-1 1 1 2 3 4 -4 5): ")
+  (mydisplay (select '(3 . 1) '(-1 1 1 2 3 4 -4 5)))
+
+  (display "Flatten List: '('a' 'b' 'c'): ")
+  (mydisplay (flatten '("a" "b" "c")))
+  (display "Flatten List: '('a' ('a' 'a') 'a'): ")
+  (mydisplay (flatten '("a" ("a" "a") "a")))
+  (display "Flatten List: '(('a' 'b') ('c' ('d') 'e') 'f'): ")
+  (mydisplay (flatten '(("a" "b") ("c" ("d") "e") "f")))
+
+  (display "Crossproduct: '(1 2) & '('a' 'b' 'c'): ")
+  (mydisplay (crossproduct '(1 2) '("a" "b" "c")))
+  (display "Crossproduct: '(1 2 'j') & '(5 -1): ")
+  (mydisplay (crossproduct '(1 2 "j") '(5 -1)))
+
+  (MenuLoop)
+)
+
+;(define (FindByZipcode)
+;)
+
+;(define (FindByPlace)
+;)
+
+;(define (StatesWithPlace)
+;)
+
+;(define (CommonPlacesBetween)
+;)
+
+;(define (CountZipCodesForState)
+;)
+
+
 (define (MenuLoop)
-  (display "Pick your option\n
+  (display "-----------------------------------------------\n
+Pick your option\n
 1. Show Results\n
 2. Find by Zipcode\n
 3. Find by Place\n
@@ -15,16 +57,14 @@
 # > ")
   (let ((select-val (read)))
   (cond
-    ((= select-val 1) (displayln "Show Results"))
-    ((= select-val 2) (displayln "Find by Zipcode"))
-    ((= select-val 3) (displayln "Find by Place"))
-    ((= select-val 4) (displayln "Find states that have the given place"))
-    ((= select-val 5) (displayln "Find common places between states"))
-    ((= select-val 6) (displayln "Count zip codes for a given state"))
+    ((= select-val 1) (displayln "Show Results") (ShowResults))
+    ;((= select-val 2) (displayln "Find by Zipcode" (FindByZipcode)))
+    ;((= select-val 3) (displayln "Find by Place") (FindByPlace))
+    ;((= select-val 4) (displayln "Find states that have the given place") (StatesWithPlace))
+    ;((= select-val 5) (displayln "Find common places between states") (CommonPlacesBetween))
+    ;((= select-val 6) (displayln "Count zip codes for a given state") (CountZipCodesForState))
     (else (displayln "End Function"))
   ))
-
-  (MenuLoop)
 )
 
 (MenuLoop)
