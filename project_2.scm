@@ -28,8 +28,34 @@
   (MenuLoop)
 )
 
-;(define (FindByZipcode)
-;)
+(define (ZipSearchHelper zip lst)
+  (if (= (caar lst) zip)
+      (let ((ans (car lst)))
+        (display "\nZipcode: ")
+        (display (car ans))
+        (display "\nPlace: ")
+        (display (cadr ans))
+        (display "\nState: ")
+        (display (caddr ans))
+        (display "\nCounty: ")
+        (display (cadddr ans))
+        (display "\nLat and Long: ")
+        (display (cadddr (cdr ans)))
+        (display ", ")
+        (display (cadddr (cddr ans)))
+      )
+      (ZipSearchHelper zip (cdr lst))
+  )
+)
+
+(define (FindByZipcode)
+  (display "Input Zipcode >")
+  (let ((zipcode (read)))
+    (ZipSearchHelper zipcode zipcodes)
+  )
+
+  (MenuLoop)
+)
 
 ;(define (FindByPlace)
 ;)
@@ -45,7 +71,7 @@
 
 
 (define (MenuLoop)
-  (display "-----------------------------------------------\n
+  (display "\n-----------------------------------------------\n
 Pick your option\n
 1. Show Results\n
 2. Find by Zipcode\n
@@ -58,7 +84,7 @@ Pick your option\n
   (let ((select-val (read)))
   (cond
     ((= select-val 1) (displayln "Show Results") (ShowResults))
-    ;((= select-val 2) (displayln "Find by Zipcode" (FindByZipcode)))
+    ((= select-val 2) (displayln "Find by Zipcode" (FindByZipcode)))
     ;((= select-val 3) (displayln "Find by Place") (FindByPlace))
     ;((= select-val 4) (displayln "Find states that have the given place") (StatesWithPlace))
     ;((= select-val 5) (displayln "Find common places between states") (CommonPlacesBetween))
