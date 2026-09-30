@@ -1,4 +1,4 @@
-;Andrew :
+;Andrew : Set up all run_funcs.scm functions Set up menu loop Set up Show_Results Set up Find_By_Zipcode Set up Find_By_Place
 ;Ron Completed the 6th function, CountZipCodesForState:
 ;Leah Johnston: Completed option 4 and Collaborated to complete option 5
 ;AJ Marin: Collaborated to complete option 5
