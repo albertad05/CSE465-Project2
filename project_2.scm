@@ -3,7 +3,12 @@
 (require "zipcodes.scm")
 (require "run_funcs.scm")
 
+; This is the ShowResults function for all of the functions
+; in the run_funcs.scm file
+; - Andrew Albert
 (define (ShowResults)
+  ; All of these are the Select function calls, display is used
+  ; here so that the inputs and results are on the same line.
   (display "Select List: '(1 . 2) '(-1 1 2 3 4 -4 5): ")
   (mydisplay (select '(1 . 2) '(-1 1 2 3 4 -4 5)))
   (display "Select List: '(-1 . 3) '(-1 1 1 2 3 4 -4 5)): ")
@@ -13,6 +18,7 @@
   (display "Select List: '(3 . 1) '(-1 1 1 2 3 4 -4 5): ")
   (mydisplay (select '(3 . 1) '(-1 1 1 2 3 4 -4 5)))
 
+  ; All of these are the Flatten function calls
   (display "Flatten List: '('a' 'b' 'c'): ")
   (mydisplay (flatten '("a" "b" "c")))
   (display "Flatten List: '('a' ('a' 'a') 'a'): ")
@@ -20,18 +26,30 @@
   (display "Flatten List: '(('a' 'b') ('c' ('d') 'e') 'f'): ")
   (mydisplay (flatten '(("a" "b") ("c" ("d") "e") "f")))
 
+  ; All of these are the Crossproduct function calls
   (display "Crossproduct: '(1 2) & '('a' 'b' 'c'): ")
   (mydisplay (crossproduct '(1 2) '("a" "b" "c")))
   (display "Crossproduct: '(1 2 'j') & '(5 -1): ")
   (mydisplay (crossproduct '(1 2 "j") '(5 -1)))
 
+  ; Open the menu back up
   (MenuLoop)
 )
 
+; This is the helper function for FindByZipcode
+; - Andrew Albert
 (define (ZipSearchHelper zip lst)
   (cond
+    ; This is the null case for the recursion, if
+    ; we've iterated through the entire list we want
+    ; to inform the user that the zipcode they entered
+    ; wasn't found.
     ((null? lst) (displayln "Zipcode not found."))
 
+    ; This checks if the first line in the current first
+    ; result in the list matches the given place that the
+    ; user input. If so it prints all the results for that
+    ; first list.
     ((= (caar lst) zip)
       (let ((ans (car lst)))
         (display "\nZipcode: ")
@@ -47,15 +65,28 @@
         (display ", ")
         (display (cadddr (cddr ans)))
       ))
-    
+
+    ; This our default else case if the list isn't null
+    ; and doesn't match the given zipcode. In this case
+    ; we remove the first result from the list and call
+    ; the helper function again. 
     (else (ZipSearchHelper zip (cdr lst)))
   )
 )
 
+; This is the helper function for FindByPlace
+; - Andrew Albert
 (define (PlaceSearchHelper plc lst)
   (cond
+    ; This is the null case for the recursion, if
+    ; we've iterated through the entire list we want
+    ; to inform the user that the place they entered
+    ; wasn't found.
     ((null? lst) (displayln "Place not found."))
 
+    ; This checks if the second line in the the current first
+    ; result in the list matches the given place that the user
+    ; input. If so it prints all the results for that first list.
     ((string=? (cadar lst) plc)
       (let ((ans (car lst)))
         (display "\nZipcode: ")
@@ -71,29 +102,50 @@
         (display ", ")
         (display (cadddr (cddr ans)))
       ))
-    
+
+    ; This is our default else case if the list isn't null and
+    ; doesn't match the given place. In this case we call this
+    ; helper function again with the first result of the list
+    ; removed.
     (else (PlaceSearchHelper plc (cdr lst)))
   )
 )
 
+; Function that prompts the user for a zipcode and returns the
+; information for the first place with that zipcode in the list
+; - Andrew Albert
 (define (FindByZipcode)
+  ; This is the prompt for the user
   (display "Input Zipcode >")
   (flush-output)
+  ; Set our input to a local variable
   (let ((zipcode (read)))
+    ; Call our helper function to display the result
     (ZipSearchHelper zipcode zipcodes)
   )
 
+  ; Open the menu back up
   (MenuLoop)
 )
 
+; Function that prompts the user for a place and returns the
+; information for the first place with that name in the list
+; - Andrew Albert
 (define (FindByPlace)
+  ; This is the prompt for the user
   (display "Input Place >")
   (flush-output)
+  ; Since we use read-line for String inputs rather than read
+  ; it's important to have an extra read-line call to clear the
+  ; previous \n. Otherwise this will always fail
   (read-line)
+  ; Set our input to a local variable
   (let ((place (read-line)))
+    ; Call our helper function to display the result
     (PlaceSearchHelper place zipcodes)
   )
-
+  
+  ; Open the menu back up
   (MenuLoop)
 )
 
@@ -231,8 +283,36 @@
   (MenuLoop)
 )
 
-;(define (CountZipCodesForState)
-;)
+; Option 6 helper: counts entries whose state matches - Ranold Antwi 
+(define (CountZipsHelper st lst count)
+  (cond
+    ((null? lst) count)
+    ((string=? (caddar lst) st) (CountZipsHelper st (cdr lst) (+ count 1)))
+    (else (CountZipsHelper st (cdr lst) count))
+  )
+)
+
+; Option 6: asks for a state abbreviation and prints how many zipcodes it has - Ranold Antwi 
+ (define (CountZipCodesForState)
+  (display "Input State (ex: OH) >")
+  (flush-output)
+  (read-line)
+  (let ((state (string-upcase (read-line))))
+    (let ((total (CountZipsHelper state zipcodes 0)))
+      (if (= total 0)
+        (displayln "No zipcodes found. Check that the state abbreviation is valid.")
+        (begin
+          (display "\nZipcodes in ")
+          (display state)
+          (display ": ")
+          (displayln total)
+        )
+      )
+    )
+  )
+
+  (MenuLoop)
+)
 
 
 (define (MenuLoop)
@@ -254,7 +334,7 @@ Pick your option\n
     ((= select-val 3) (displayln "Find by Place") (FindByPlace))
     ((= select-val 4) (displayln "Find states that have the given place") (StatesWithPlace))
     ((= select-val 5) (displayln "Find common places between states") (CommonPlacesBetween))
-    ;((= select-val 6) (displayln "Count zip codes for a given state") (CountZipCodesForState))
+    ((= select-val 6) (displayln "Count zip codes for a given state") (CountZipCodesForState))
     (else (displayln "End Function"))
   ))
 )
