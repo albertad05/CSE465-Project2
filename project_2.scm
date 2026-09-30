@@ -97,15 +97,69 @@
   (MenuLoop)
 )
 
-;(define (StatesWithPlace)
-;)
+; Option 4 helper: walks the list and collects each state with this place name - Ranold Antwi
+(define (StatesWithPlaceHelper plc lst found)
+  (cond
+    ((null? lst) found)
 
+    ((and (string=? (cadar lst) plc)
+          (not (member (caddar lst) found)))
+      (StatesWithPlaceHelper plc (cdr lst) (cons (caddar lst) found)))
+
+    (else (StatesWithPlaceHelper plc (cdr lst) found))
+  )
+)
+
+; Option 4: asks for a place name and prints every state that has it - Ranold Antwi
+(define (StatesWithPlace)
+  (display "Input Place >")
+  (flush-output)
+  (read-line)
+  (let ((states (StatesWithPlaceHelper (read-line) zipcodes '())))
+    (if (null? states)
+      (displayln "No states have that place.")
+      (begin
+        (display "\nStates with that place: ")
+        (displayln states)
+      )
+    )
+  )
+
+  (MenuLoop)
+)
 ;(define (CommonPlacesBetween)
 ;)
 
-;(define (CountZipCodesForState)
-;)
+; Option 6 helper: counts entries whose state matches - Ranold Antwi 
+(define (CountZipsHelper st lst count)
+  (cond
+    ((null? lst) count)
+    ((string=? (caddar lst) st) (CountZipsHelper st (cdr lst) (+ count 1)))
+    (else (CountZipsHelper st (cdr lst) count))
+  )
+)
 
+; Option 6: asks for a state abbreviation and prints how many zipcodes it has - Ranold Antwi 
+ (define (CountZipCodesForState)
+  (display "Input State (ex: OH) >")
+  (flush-output)
+  (read-line)
+  (let ((state (string-upcase (read-line))))
+    (let ((total (CountZipsHelper state zipcodes 0)))
+      (if (= total 0)
+        (displayln "No zipcodes found. Check that the state abbreviation is valid.")
+        (begin
+          (display "\nZipcodes in ")
+          (display state)
+          (display ": ")
+          (displayln total)
+        )
+      )
+    )
+  )
+
+  (MenuLoop)
+)
 
 (define (MenuLoop)
   (display "\n-----------------------------------------------\n
