@@ -157,8 +157,79 @@
   (MenuLoop)
  )
 
-;(define (CommonPlacesBetween)
-;)
+; Function that finds the non-duplicate places in each state
+; and will return the list of places. 
+(define (PlacesInState state lst places)
+  (cond
+    ((null? lst) places)
+    ((string=? (caddar lst) state)
+       (let ((place (cadar lst)))
+         (if (member place places)
+             (PlacesInState state (cdr lst) places)
+             (PlacesInState state (cdr lst) (cons place places)))))
+     (else (PlacesInState state (cdr lst) places))
+         
+     ))
+
+; Returns a result list of items in places1 that are also
+; in places2.
+(define (IntersectPlaces places1 places2 result)
+  (cond
+    ; If places1 is null, the function is done going through places1
+    ((null? places1) result)
+    ; If the first place in places1 is in places2,
+    ((member (car places1) places2)
+     ; Call Intersect planes passing places1 minus the first place,
+     ; places2, and an updated result list that adds the first place
+     ; in places1.
+    (IntersectPlaces (cdr places1) places2 (cons (car places1) result)))
+    ; If places1 is not null, and the first place in places1 is not
+    ; in places2, then call IntersectPlaces on places1 minus the first
+    ; place, places2, and an unupdated result list.
+    (else (IntersectPlaces (cdr places1) places2 result)))
+  )
+
+; The function starts with the result (the places of the first state)
+; and intersects that list with the places list of remaining states.
+(define (CommonPlacesBetweenHelper states result)
+  (cond
+    ; If states is null, all given states have been examined, so
+    ; the function is done and return result.
+    ((null? states) result)
+    ; If there are more states to go through, recusivly call this helper
+    ; function. Each time CommonPlacesBetweenHelper calls itself, the first
+    ; state is examined and the IntersectPlaces function is called with the
+    ; current result, PlacesInState (takes the first state and the zipcodes
+    ; list, and an empty list) returns the places in the first state, and
+    ; an empty list.
+    (else
+     (CommonPlacesBetweenHelper (cdr states) (IntersectPlaces result
+     (PlacesInState(car states) zipcodes '()) '())))
+    ))
+
+; This function takes the user input of however many state
+; abbreviations and displays the non-duplicate list
+; of the common places between the inputted states. 
+(define (CommonPlacesBetween)
+ (display "Input State Abbreviations >")
+  (flush-output)
+  (read-line)
+  (let ((states (string-split (read-line))))
+    (if (< (length states) 2)
+        (displayln "User must enter at least two state abbreviations")
+        (let ((result (CommonPlacesBetweenHelper (cdr states)
+                       (PlacesInState (car states) zipcodes '()))))
+          (if (null? result)
+              (displayln "No Common Places Found")
+              (begin
+                (display "\nCommon Places Between ")
+                (mydisplay states)
+                (display ": ")
+                (mydisplay result)))
+          )))
+
+  (MenuLoop)
+)
 
 ;(define (CountZipCodesForState)
 ;)
@@ -182,7 +253,7 @@ Pick your option\n
     ((= select-val 2) (displayln "Find by Zipcode" (FindByZipcode)))
     ((= select-val 3) (displayln "Find by Place") (FindByPlace))
     ((= select-val 4) (displayln "Find states that have the given place") (StatesWithPlace))
-    ;((= select-val 5) (displayln "Find common places between states") (CommonPlacesBetween))
+    ((= select-val 5) (displayln "Find common places between states") (CommonPlacesBetween))
     ;((= select-val 6) (displayln "Count zip codes for a given state") (CountZipCodesForState))
     (else (displayln "End Function"))
   ))
