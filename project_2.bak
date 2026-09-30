@@ -1,7 +1,3 @@
-;Andrew :
-;Ron :
-;Leah Johnston: Completed option 4 and Collaborated to complete option 5
-;AJ Marin: Collaborated to complete option 5
 #lang scheme
 
 (require "zipcodes.scm")
@@ -231,14 +227,16 @@
 ; in places2.
 (define (IntersectPlaces places1 places2 result)
   (cond
+    ; If places1 is null, the function is done going through places1
     ((null? places1) result)
+    ; If the first place in places1 is in places2,
     ((member (car places1) places2)
-     ; Call Intersect planes passing places1 without the first place,
+     ; Call Intersect planes passing places1 minus the first place,
      ; places2, and an updated result list that adds the first place
      ; in places1.
     (IntersectPlaces (cdr places1) places2 (cons (car places1) result)))
     ; If places1 is not null, and the first place in places1 is not
-    ; in places2, then call IntersectPlaces on places1 without the first
+    ; in places2, then call IntersectPlaces on places1 minus the first
     ; place, places2, and an unupdated result list.
     (else (IntersectPlaces (cdr places1) places2 result)))
   )
@@ -247,6 +245,8 @@
 ; and intersects that list with the places list of remaining states.
 (define (CommonPlacesBetweenHelper states result)
   (cond
+    ; If states is null, all given states have been examined, so
+    ; the function is done and return result.
     ((null? states) result)
     ; If there are more states to go through, recusivly call this helper
     ; function. Each time CommonPlacesBetweenHelper calls itself, the first
