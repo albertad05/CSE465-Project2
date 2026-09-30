@@ -1,5 +1,5 @@
 ;Andrew :
-;Ron :
+;Ron Completed the 6th function, CountZipCodesForState:
 ;Leah Johnston: Completed option 4 and Collaborated to complete option 5
 ;AJ Marin: Collaborated to complete option 5
 #lang scheme
